@@ -30,24 +30,28 @@
     <div class="container">
         <h1>羽毛球费用分摊计算器</h1>
         <div class="input-item">
+            <label>场地费</label>
+            <input type="number" id="siteFee" min="1" step="5">
+        </div>        
+        <div class="input-item">
             <label>打球总人数（必填，至少1人）</label>
-            <input type="number" id="peopleNum" min="1" placeholder="请输入人数，如：6" step="1">
+            <input type="number" id="peopleNum" min="1" placeholder="" step="1">
         </div>
         <div class="input-item">
             <label>球01 整桶总价（元）</label>
-            <input type="number" id="ball1Total" min="0" placeholder="请输入球01整桶总价，如：60" step="0.01">
+            <input type="number" id="ball1Total" min="0" placeholder="" step="0.01">
         </div>
         <div class="input-item">
             <label>球01 当日使用数量（个）</label>
-            <input type="number" id="ball1Count" min="0" placeholder="请输入使用个数，如：2" step="1">
+            <input type="number" id="ball1Count" min="0" placeholder="" step="1">
         </div>
         <div class="input-item">
             <label>球02 整桶总价（元）</label>
-            <input type="number" id="ball2Total" min="0" placeholder="请输入球02整桶总价，如：80" step="0.01">
+            <input type="number" id="ball2Total" min="0" placeholder="" step="0.01">
         </div>
         <div class="input-item">
             <label>球02 当日使用数量（个）</label>
-            <input type="number" id="ball2Count" min="0" placeholder="请输入使用个数，如：1" step="1">
+            <input type="number" id="ball2Count" min="0" placeholder="" step="1">
         </div>
         <button onclick="calcCost()">计算并生成费用报告</button>
         
@@ -57,13 +61,14 @@
 
     <script>
         // 固定场地费 35元 不变
-        const siteFee = 35;
+        // const siteFee = 35;
         // 星期中文映射表
         const weekArr = ['周日','周一','周二','周三','周四','周五','周六'];
 
         // 核心计算+生成精美报告方法
         function calcCost() {
             // 获取所有输入参数并转数字
+            const siteFee = Number(document.getElementById('siteFee').value)
             const peopleNum = Number(document.getElementById('peopleNum').value);
             const ball1Total = Number(document.getElementById('ball1Total').value);
             const ball1Count = Number(document.getElementById('ball1Count').value);
@@ -71,6 +76,11 @@
             const ball2Count = Number(document.getElementById('ball2Count').value);
 
             // 合法性校验
+            if (!siteFee || siteFee < 1) {
+                alert('请输入正确的场地费');
+                return;
+            }
+
             if (!peopleNum || peopleNum < 1) {
                 alert('请输入正确的打球人数（至少1人）');
                 return;
@@ -84,6 +94,7 @@
             const ball1Cost = (ball1Total / 12) * ball1Count; //球01总花费
             const ball2Cost = (ball2Total / 12) * ball2Count; //球02总花费
             const totalCost = siteFee + ball1Cost + ball2Cost; //打球总费用
+            const ballTotalCost = (ball1Total / 12) * ball1Count + (ball2Total / 12) * ball2Count
             const perPersonCost = totalCost / peopleNum; //每人平摊费用
 
             // ===== 自动获取当日日期+星期 =====
@@ -111,7 +122,7 @@
                     <div class="report-row"><span>球01当日总花费：</span><span>¥ ${ball1Cost.toFixed(2)} 元</span></div>
                     <div class="report-row"><span>球02单价(单颗)：</span><span>¥ ${(ball2Total/12).toFixed(2)} 元</span></div>
                     <div class="report-row"><span>球02当日总花费：</span><span>¥ ${ball2Cost.toFixed(2)} 元</span></div>
-                    <div class="report-row total"><span>✅ 当日打球总费用：</span><span>¥ ${totalCost.toFixed(2)} 元</span></div>
+                    <div class="report-row total"><span>✅ 当日打球总费用：</span><span>¥ ${totalCost.toFixed(2)} 元，其中场地费¥ ${siteFee.toFixed(2)}，球费¥ ${ballTotalCost.toFixed(2) }  </span></div>
                 </div>
                 <div class="report-section">
                     <h3>三、最终平摊结果</h3>
