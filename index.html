@@ -24,44 +24,50 @@
         .report-row span:first-child { color: #475569; }
         .report-row.total { font-weight: bold; color: #dc2626; font-size: 16px; padding-top: 8px; border-top: 1px dashed #cbd5e1; }
         .report-result { margin-top: 15px; text-align: center; font-size: 20px; font-weight: bold; color: #0f172a; padding: 10px; background: #eff6ff; border-radius: 8px; }
+        /* 一行双输入框样式 */
+        .double-input { display: flex; gap: 10px; width: 100%; }
+        .double-input input { flex: 1; }
+        /* 新增：版权标志样式 */
+        .copyright { margin-top: 20px; text-align: center; font-size: 13px; color: #9ca3af; padding-top: 15px; border-top: 1px solid #e5e7eb; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>羽毛球费用分摊计算器</h1>
         <div class="input-item">
-            <label>场地费</label>
+            <label>场地费（元）</label>
             <input type="number" id="siteFee" min="1" step="5">
         </div>        
         <div class="input-item">
             <label>打球总人数（必填，至少1人）</label>
             <input type="number" id="peopleNum" min="1" placeholder="" step="1">
         </div>
+        <!-- 球01 价格+数量 同一行 -->
         <div class="input-item">
-            <label>球01 整桶总价（元）</label>
-            <input type="number" id="ball1Total" min="0" placeholder="" step="0.01">
+            <label>球01 - 整桶总价（元） | 当日使用数量（个）</label>
+            <div class="double-input">
+                <input type="number" id="ball1Total" min="0" placeholder="整桶价" value=79.9 step="0.01">
+                <input type="number" id="ball1Count" min="0" placeholder="使用个数" step="1">
+            </div>
         </div>
+        <!-- 球02 价格+数量 同一行 -->
         <div class="input-item">
-            <label>球01 当日使用数量（个）</label>
-            <input type="number" id="ball1Count" min="0" placeholder="" step="1">
-        </div>
-        <div class="input-item">
-            <label>球02 整桶总价（元）</label>
-            <input type="number" id="ball2Total" min="0" placeholder="" step="0.01">
-        </div>
-        <div class="input-item">
-            <label>球02 当日使用数量（个）</label>
-            <input type="number" id="ball2Count" min="0" placeholder="" step="1">
+            <label>球02 - 整桶总价（元） | 当日使用数量（个）</label>
+            <div class="double-input">
+                <input type="number" id="ball2Total" min="0" placeholder="整桶价" step="0.01">
+                <input type="number" id="ball2Count" min="0" placeholder="使用个数" step="1">
+            </div>
         </div>
         <button onclick="calcCost()">计算并生成费用报告</button>
         
         <!-- 费用报告展示区域 -->
         <div class="report" id="report" style="display: none;"></div>
+
+        <!-- 新增：版权标志 -->
+        <div class="copyright">© 2026 开心羽球群 版权所有</div>
     </div>
 
     <script>
-        // 固定场地费 35元 不变
-        // const siteFee = 35;
         // 星期中文映射表
         const weekArr = ['周日','周一','周二','周三','周四','周五','周六'];
 
@@ -90,7 +96,7 @@
                 return;
             }
 
-            // ===== 严格按照你的公式计算 =====
+            // ===== 严格原有公式计算 =====
             const ball1Cost = (ball1Total / 12) * ball1Count; //球01总花费
             const ball2Cost = (ball2Total / 12) * ball2Count; //球02总花费
             const totalCost = siteFee + ball1Cost + ball2Cost; //打球总费用
@@ -122,7 +128,7 @@
                     <div class="report-row"><span>球01当日总花费：</span><span>¥ ${ball1Cost.toFixed(2)} 元</span></div>
                     <div class="report-row"><span>球02单价(单颗)：</span><span>¥ ${(ball2Total/12).toFixed(2)} 元</span></div>
                     <div class="report-row"><span>球02当日总花费：</span><span>¥ ${ball2Cost.toFixed(2)} 元</span></div>
-                    <div class="report-row total"><span>✅ 当日打球总费用：</span><span>¥ ${totalCost.toFixed(2)} 元，其中场地费¥ ${siteFee.toFixed(2)}，球费¥ ${ballTotalCost.toFixed(2) }  </span></div>
+                    <div class="report-row total"><span>✅ 当日打球总费用：</span><span>¥ ${totalCost.toFixed(2)} 元，其中场地费¥ ${siteFee.toFixed(2)}，球费¥ ${ballTotalCost.toFixed(2)}  </span></div>
                 </div>
                 <div class="report-section">
                     <h3>三、最终平摊结果</h3>
