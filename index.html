@@ -6,74 +6,120 @@
     <title>羽毛球费用分摊计算器</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: "Microsoft YaHei", Arial, sans-serif; max-width: 600px; margin: 30px auto; padding: 0 20px; background: #f8f9fa; }
-        .container { border: 1px solid #e5e7eb; padding: 30px; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.06); background: #fff; }
+        body { 
+            font-family: "Microsoft YaHei", Arial, sans-serif; 
+            max-width: 600px; 
+            margin: 30px auto; 
+            padding: 0 20px; 
+            background: url('backgroup.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.85);
+            z-index: -1;
+        }
+        .container { 
+            border: 1px solid #e5e7eb; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.1); 
+            background: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 1;
+        }
         h1 { text-align: center; color: #2d3748; margin-bottom: 28px; font-size: 20px; font-weight: 600; }
+        .input-section { margin-bottom: 20px; }
         .input-item { margin-bottom: 18px; }
         label { display: block; margin-bottom: 6px; color: #4b5563; font-size: 14px; }
-        input { width: 100%; padding: 11px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; }
+        input { width: 100%; padding: 11px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; background: rgba(255,255,255,0.95); }
         input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.1); }
         button { width: 100%; padding: 13px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 17px; cursor: pointer; margin-top: 8px; }
         button:hover { background: #1d4ed8; }
-        /* 精美报告样式 - 重点优化 */
-        .report { margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; }
-        .report-title { text-align: center; font-size: 18px; font-weight: bold; color: #1e40af; padding-bottom: 15px; border-bottom: 2px solid #dbeafe; margin-bottom: 15px; }
-        .report-section { margin-bottom: 12px; }
-        .report-section h3 { font-size: 15px; color: #334155; margin-bottom: 8px; font-weight: 600; }
-        .report-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 15px; color: #1e293b; }
-        .report-row span:first-child { color: #475569; }
-        .report-row.total { font-weight: bold; color: #dc2626; font-size: 16px; padding-top: 8px; border-top: 1px dashed #cbd5e1; }
-        .report-result { margin-top: 15px; text-align: center; font-size: 20px; font-weight: bold; color: #0f172a; padding: 10px; background: #eff6ff; border-radius: 8px; }
-        /* 一行双输入框样式 */
         .double-input { display: flex; gap: 10px; width: 100%; }
         .double-input input { flex: 1; }
-        /* 新增：版权标志样式 */
         .copyright { margin-top: 20px; text-align: center; font-size: 13px; color: #9ca3af; padding-top: 15px; border-top: 1px solid #e5e7eb; }
+
+        /* 极简报告样式 */
+        .report { margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.95); border-radius: 10px; border: 1px solid #e2e8f0; }
+        .report-header { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #f3f4f6; }
+        .fee-item { display: flex; justify-content: space-between; padding: 10px 0; font-size: 15px; border-bottom: 1px solid #f3f4f6; }
+        .fee-item:last-child { border-bottom: none; }
+        .fee-item .label { color: #4b5563; flex: 1; text-align: left; }
+        .fee-item .value { color: #1f2937; flex: 0 0 100px; text-align: right; }
+        .total-fee { display: flex; justify-content: space-between; padding: 12px 0; font-size: 16px; font-weight: bold; color: #2563eb; border-top: 2px solid #dbeafe; margin-top: 10px; }
+        .per-person { margin-top: 20px; padding: 15px; background: #eff6ff; border-radius: 8px; text-align: center; font-size: 17px; font-weight: bold; color: #1e40af; }
+        .report-buttons { display: flex; gap: 15px; margin-top: 25px; }
+        .report-buttons button { flex: 1; padding: 12px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; }
+        .btn-back { background: #2563eb; color: #fff; }
+        .btn-back:hover { background: #1d4ed8; }
+        .btn-share { background: #10b981; color: #fff; }
+        .btn-share:hover { background: #059669; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>羽毛球费用分摊计算器</h1>
-        <div class="input-item">
-            <label>场地费（元）</label>
-            <input type="number" id="siteFee" min="1" step="5">
-        </div>        
-        <div class="input-item">
-            <label>打球总人数（必填，至少1人）</label>
-            <input type="number" id="peopleNum" min="1" placeholder="" step="1">
-        </div>
-        <!-- 球01 价格+数量 同一行 -->
-        <div class="input-item">
-            <label>球01 - 整桶总价（元） | 当日使用数量（个）</label>
-            <div class="double-input">
-                <input type="number" id="ball1Total" min="0" placeholder="整桶价" value=79.99 step="0.01">
-                <input type="number" id="ball1Count" min="0" placeholder="使用个数" step="1">
-            </div>
-        </div>
-        <!-- 球02 价格+数量 同一行 -->
-        <div class="input-item">
-            <label>球02 - 整桶总价（元） | 当日使用数量（个）</label>
-            <div class="double-input">
-                <input type="number" id="ball2Total" min="0" placeholder="整桶价" step="0.01">
-                <input type="number" id="ball2Count" min="0" placeholder="使用个数" step="1">
-            </div>
-        </div>
-        <button onclick="calcCost()">计算并生成费用报告</button>
         
-        <!-- 费用报告展示区域 -->
-        <div class="report" id="report" style="display: none;"></div>
+        <!-- 输入区域 -->
+        <div class="input-section" id="inputSection">
+            <div class="input-item">
+                <label>场地费（元）</label>
+                <input type="number" id="siteFee" min="1" step="5">
+            </div>        
+            <div class="input-item">
+                <label>打球总人数（必填，至少1人）</label>
+                <input type="number" id="peopleNum" min="1" placeholder="" step="1">
+            </div>
+            <div class="input-item">
+                <label>球A - 整桶总价（元） | 当日使用数量（个）</label>
+                <div class="double-input">
+                    <input type="number" id="ball1Total" min="0" placeholder="整桶价" value=79.9 step="0.01">
+                    <input type="number" id="ball1Count" min="0" placeholder="使用个数" step="1">
+                </div>
+            </div>
+            <div class="input-item">
+                <label>球B - 整桶总价（元） | 当日使用数量（个）</label>
+                <div class="double-input">
+                    <input type="number" id="ball2Total" min="0" placeholder="整桶价" step="0.01">
+                    <input type="number" id="ball2Count" min="0" placeholder="使用个数" step="1">
+                </div>
+            </div>
+            <button onclick="calcCost()">计算并生成费用报告</button>
+        </div>
+        
+        <!-- 极简费用报告展示区域 -->
+        <div class="report" id="report" style="display: none;">
+            <div class="report-header" id="reportDate"></div>
+            <div class="fee-item">
+                <span class="label">场地费</span>
+                <span class="value" id="siteFeeResult"></span>
+            </div>
+            <div id="ballFeeDetails"></div>
+            <div class="total-fee">
+                <span>合计</span>
+                <span id="totalFeeResult"></span>
+            </div>
+            <div class="per-person" id="perPersonResult"></div>
+            <div class="report-buttons">
+                <button class="btn-back" onclick="resetReport()">返回计算</button>
+                <button class="btn-share" onclick="shareResult()">分享结果</button>
+            </div>
+        </div>
 
-        <!-- 新增：版权标志 -->
         <div class="copyright">© 2026 开心羽球群 版权所有</div>
     </div>
 
     <script>
-        // 星期中文映射表
         const weekArr = ['周日','周一','周二','周三','周四','周五','周六'];
 
-        // 核心计算+生成精美报告方法
         function calcCost() {
-            // 获取所有输入参数并转数字
             const siteFee = Number(document.getElementById('siteFee').value)
             const peopleNum = Number(document.getElementById('peopleNum').value);
             const ball1Total = Number(document.getElementById('ball1Total').value);
@@ -81,68 +127,92 @@
             const ball2Total = Number(document.getElementById('ball2Total').value);
             const ball2Count = Number(document.getElementById('ball2Count').value);
 
-            // 合法性校验
             if (!siteFee || siteFee < 1) {
                 alert('请输入正确的场地费');
                 return;
             }
-
             if (!peopleNum || peopleNum < 1) {
                 alert('请输入正确的打球人数（至少1人）');
                 return;
             }
-            if (isNaN(ball1Total) || isNaN(ball1Count) || isNaN(ball2Total) || isNaN(ball2Count)) {
-                alert('请填写完整的羽毛球价格和使用数量，不能为空！');
+            if (isNaN(ball1Total) || isNaN(ball1Count)) {
+                alert('请填写完整的球A价格和使用数量！');
                 return;
             }
 
-            // ===== 严格原有公式计算 =====
-            const ball1Cost = (ball1Total / 12) * ball1Count; //球01总花费
-            const ball2Cost = (ball2Total / 12) * ball2Count; //球02总花费
-            const totalCost = siteFee + ball1Cost + ball2Cost; //打球总费用
-            const ballTotalCost = (ball1Total / 12) * ball1Count + (ball2Total / 12) * ball2Count
-            const perPersonCost = totalCost / peopleNum; //每人平摊费用
+            const ball1Cost = (ball1Total / 12) * ball1Count;
+            let ball2Cost = 0;
+            let ballFeeDetailsHtml = '';
 
-            // ===== 自动获取当日日期+星期 =====
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = (today.getMonth()+1).toString().padStart(2,0); //补0成两位数
-            const day = today.getDate().toString().padStart(2,0);
-            const week = weekArr[today.getDay()];
-            const reportTitle = `${year}-${month}-${day} ${week}打球平摊费用`;
-
-            // ===== 生成【精美费用报告】HTML结构 =====
-            const reportHtml = `
-                <div class="report-title">${reportTitle}</div>
-                <div class="report-section">
-                    <h3>一、基础参与信息</h3>
-                    <div class="report-row"><span>当日打球总人数：</span><span>${peopleNum} 人</span></div>
-                    <div class="report-row"><span>当日使用球01数量：</span><span>${ball1Count} 个</span></div>
-                    <div class="report-row"><span>当日使用球02数量：</span><span>${ball2Count} 个</span></div>
-                    <div class="report-row"><span>当日总用球数量：</span><span>${ball1Count + ball2Count} 个</span></div>
-                </div>
-                <div class="report-section">
-                    <h3>二、费用明细（精准计算）</h3>
-                    <div class="report-row"><span>场地费用：</span><span>¥ ${siteFee.toFixed(2)} 元</span></div>
-                    <div class="report-row"><span>球01单价(单颗)：</span><span>¥ ${(ball1Total/12).toFixed(2)} 元</span></div>
-                    <div class="report-row"><span>球01当日总花费：</span><span>¥ ${ball1Cost.toFixed(2)} 元</span></div>
-                    <div class="report-row"><span>球02单价(单颗)：</span><span>¥ ${(ball2Total/12).toFixed(2)} 元</span></div>
-                    <div class="report-row"><span>球02当日总花费：</span><span>¥ ${ball2Cost.toFixed(2)} 元</span></div>
-                    <div class="report-row total"><span>✅ 当日打球总费用：</span><span>¥ ${totalCost.toFixed(2)} 元，其中场地费¥ ${siteFee.toFixed(2)}，球费¥ ${ballTotalCost.toFixed(2)}  </span></div>
-                </div>
-                <div class="report-section">
-                    <h3>三、最终平摊结果</h3>
-                    <div class="report-result">每人需平摊费用：¥ ${perPersonCost.toFixed(2)} 元</div>
+            // 球A明细（新格式：球A费用（3个，90.34/桶） ¥22.59元）
+            ballFeeDetailsHtml += `
+                <div class="fee-item">
+                    <span class="label">球A费用（${ball1Count}个，${ball1Total.toFixed(2)}/桶）</span>
+                    <span class="value">¥ ${ball1Cost.toFixed(2)} 元</span>
                 </div>
             `;
 
-            // 显示报告
-            document.getElementById('report').innerHTML = reportHtml;
+            // 球B明细（有数据才显示，新格式）
+            if (ball2Total > 0 && ball2Count > 0) {
+                ball2Cost = (ball2Total / 12) * ball2Count;
+                ballFeeDetailsHtml += `
+                    <div class="fee-item">
+                        <span class="label">球B费用（${ball2Count}个，${ball2Total.toFixed(2)}/桶）</span>
+                        <span class="value">¥ ${ball2Cost.toFixed(2)} 元</span>
+                    </div>
+                `;
+            }
+
+            // 总球费
+            const ballTotalCost = ball1Cost + ball2Cost;
+            const totalBallCount = ball1Count + ball2Count;
+            ballFeeDetailsHtml += `
+                <div class="fee-item">
+                    <span class="label">总用球费（${totalBallCount}个）</span>
+                    <span class="value">¥ ${ballTotalCost.toFixed(2)} 元</span>
+                </div>
+            `;
+
+            document.getElementById('ballFeeDetails').innerHTML = ballFeeDetailsHtml;
+
+            const totalCost = siteFee + ballTotalCost;
+            const perPersonCost = totalCost / peopleNum;
+
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = (today.getMonth()+1).toString().padStart(2,0);
+            const day = today.getDate().toString().padStart(2,0);
+            const week = weekArr[today.getDay()];
+            document.getElementById('reportDate').textContent = `${year}年${month}月${day}日 ${week}`;
+
+            document.getElementById('siteFeeResult').textContent = `¥ ${siteFee.toFixed(2)} 元`;
+            document.getElementById('totalFeeResult').textContent = `¥ ${totalCost.toFixed(2)} 元`;
+            document.getElementById('perPersonResult').textContent = `总人数${peopleNum}人，每人需平摊：¥ ${perPersonCost.toFixed(2)} 元`;
+
+            // 隐藏输入区域，显示报告
+            document.getElementById('inputSection').style.display = 'none';
             document.getElementById('report').style.display = 'block';
-            // 计算完成后滚动到报告区域，体验更好
             document.getElementById('report').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function resetReport() {
+            // 显示输入区域，隐藏报告
+            document.getElementById('inputSection').style.display = 'block';
+            document.getElementById('report').style.display = 'none';
+            document.documentElement.scrollTop = 0;
+        }
+
+        function shareResult() {
+            const resultText = `【开心羽球群】打球费用：${document.getElementById('totalFeeResult').textContent}，${document.getElementById('perPersonResult').textContent}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: '羽毛球费用分摊结果',
+                    text: resultText
+                });
+            } else {
+                alert('分享功能暂不可用，你可以手动复制结果：\n' + resultText);
+            }
         }
     </script>
 </body>
-
 </html>
