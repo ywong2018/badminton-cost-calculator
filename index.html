@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>羽毛球费用分摊计算器</title>
+    <title>开心羽球群费用分摊器</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -11,26 +11,46 @@
             width: 100%; 
             margin: 0 auto; 
             padding: 10px 5px; 
-            background: url('backgroup.jpg') no-repeat center center fixed;
-            background-size: cover;
             position: relative;
+            background: #f8f9fa;
         }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* 轮播背景图容器 - 核心修改：放在内容下方 */
+        .bg-slider {
+            width: 100%;
+            height: 200px; /* 固定高度，适配手机 */
+            overflow: hidden;
+            position: relative;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .bg-slider .slides {
+            display: flex;
+            width: 300%; /* 3张图则设为300%，n张图设为n*100% */
+            animation: slide 15s infinite linear;
+        }
+        .bg-slider .slide {
             width: 100%;
             height: 100%;
-            background: rgba(255,255,255,0.85);
-            z-index: -1;
         }
+        .bg-slider .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保持比例填充容器 */
+        }
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            33% { transform: translateX(-100%); }
+            66% { transform: translateX(-200%); }
+            100% { transform: translateX(0); }
+        }
+
         .container { 
             border: 1px solid #e5e7eb; 
             padding: 15px 10px; 
             border-radius: 8px; 
             box-shadow: 0 0 10px rgba(0,0,0,0.08); 
-            background: rgba(255,255,255,0.95);
+            background: #ffffff; /* 内容区域纯白背景，保证文字清晰 */
             position: relative;
             z-index: 1;
             max-width: 100%;
@@ -39,7 +59,7 @@
         .input-section { margin-bottom: 10px; }
         .input-item { margin-bottom: 10px; }
         label { display: block; margin-bottom: 4px; color: #4b5563; font-size: 14px; }
-        input { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; background: rgba(255,255,255,0.95); }
+        input { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; background: #ffffff; }
         input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.1); }
         button { width: 100%; padding: 10px; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 5px; }
         button:hover { background: #1d4ed8; }
@@ -47,16 +67,16 @@
         .double-input input { flex: 1; }
         .copyright { margin-top: 10px; text-align: center; font-size: 12px; color: #9ca3af; padding-top: 8px; border-top: 1px solid #e5e7eb; }
 
-        /* 极简报告样式 - 核心适配优化 */
-        .report { margin-top: 15px; padding: 6px 5px; background: rgba(255,255,255,0.98); border-radius: 6px; border: 1px solid #e2e8f0; width: 100%; }
+        /* 极简报告样式 - 保留优化后的紧凑布局 */
+        .report { margin-top: 15px; padding: 12px 10px; background: #ffffff; border-radius: 6px; border: 1px solid #e2e8f0; width: 100%; }
         .report-header { text-align: center; color: #6b7280; font-size: 13px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f3f4f6; }
-        .fee-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 10px; border-bottom: 1px solid #f3f4f6; }
+        .fee-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
         .fee-item:last-child { border-bottom: none; }
         .fee-item .label { color: #4b5563; flex: 1; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
         .fee-item .value { color: #1f2937; flex: 0 0 80px; text-align: right; white-space: nowrap; }
-        .total-fee { display: flex; justify-content: space-between; padding: 6px 0; font-size: 10px; font-weight: bold; color: #2563eb; border-top: 2px solid #dbeafe; margin-top: 6px; }
-        .per-person { margin-top: 8px; padding: 8px; background: #eff6ff; border-radius: 6px; text-align: center; font-size: 10px; font-weight: bold; color: #1e40af; }
-        .report-buttons { display: flex; gap: 8px; margin-top: 10px; }
+        .total-fee { display: flex; justify-content: space-between; padding: 6px 0; font-size: 15px; font-weight: bold; color: #2563eb; border-top: 2px solid #dbeafe; margin-top: 6px; }
+        .per-person { margin-top: 8px; padding: 8px; background: #eff6ff; border-radius: 6px; text-align: center; font-size: 15px; font-weight: bold; color: #1e40af; }
+        .report-buttons { display: flex; gap: 8px; margin-top: 12px; }
         .report-buttons button { flex: 1; padding: 8px; font-size: 14px; border-radius: 6px; border: none; cursor: pointer; }
         .btn-back { background: #2563eb; color: #fff; }
         .btn-back:hover { background: #1d4ed8; }
@@ -66,7 +86,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>羽毛球费用分摊计算器</h1>
+        <h1>开心羽球群费用分摊器</h1>
         
         <!-- 输入区域 -->
         <div class="input-section" id="inputSection">
@@ -75,13 +95,13 @@
                 <input type="number" id="siteFee" min="1" step="5">
             </div>        
             <div class="input-item">
-                <label>打球总人数（必填，至少1人）</label>
+                <label>打球总人数</label>
                 <input type="number" id="peopleNum" min="1" placeholder="" step="1">
             </div>
             <div class="input-item">
                 <label>球A - 整桶总价（元） | 当日使用数量（个）</label>
                 <div class="double-input">
-                    <input type="number" id="ball1Total" min="0" placeholder="整桶价" value=79.9 step="0.01">
+                    <input type="number" id="ball1Total" min="0" placeholder="整桶价" value=90.34 step="0.01">
                     <input type="number" id="ball1Count" min="0" placeholder="使用个数" step="1">
                 </div>
             </div>
@@ -111,6 +131,16 @@
             <div class="report-buttons">
                 <button class="btn-back" onclick="resetReport()">返回计算</button>
                 <button class="btn-share" onclick="shareResult()">分享结果</button>
+            </div>
+        </div>
+
+        <!-- 轮播背景图容器 - 放在内容下方 -->
+        <div class="bg-slider" id="bgSlider">
+            <div class="slides">
+                <!-- 替换为你的实际图片链接，可添加更多slide -->
+                <div class="slide"><img src="photo1.jpg" alt="开心羽球群合影1"></div>
+                <div class="slide"><img src="photo2.jpg" alt="开心羽球群合影2"></div>
+                <div class="slide"><img src="photo3.jpg" alt="开心羽球群合影3"></div>
             </div>
         </div>
 
@@ -190,7 +220,7 @@
             document.getElementById('totalFeeResult').textContent = `¥ ${totalCost.toFixed(2)} 元`;
             document.getElementById('perPersonResult').textContent = `总人数${peopleNum}人，人均：¥ ${perPersonCost.toFixed(2)} 元`;
 
-            // 隐藏输入区域，显示报告
+            // 隐藏输入区域，显示报告（背景图始终显示）
             document.getElementById('inputSection').style.display = 'none';
             document.getElementById('report').style.display = 'block';
             document.getElementById('report').scrollIntoView({behavior: 'smooth'});
