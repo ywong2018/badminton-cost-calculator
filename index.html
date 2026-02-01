@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>洛溪开心羽球群费用分摊计算器</title>
+    <title>洛溪开心羽球群费用分摊器</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -11,30 +11,29 @@
             width: 100%; 
             margin: 0 auto; 
             padding: 10px 5px; 
-            position: relative;
             background: #f8f9fa;
         }
-        /* 全屏背景图 - 清晰显示 */
-        .bg-full {
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* 轮播图容器 - 放在内容下方 */
+        .bg-slider {
             width: 100%;
-            height: 100%;
-            z-index: -1;
+            height: 250px;
             overflow: hidden;
+            position: relative;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
         }
-        .bg-full .slides {
+        .bg-slider .slides {
             display: flex;
             width: 500%; /* 3张图则设为300% */
             height: 100%;
             animation: slide 30s infinite linear;
         }
-        .bg-full .slide {
+        .bg-slider .slide {
             width: 100%;
             height: 100%;
         }
-        .bg-full .slide img {
+        .bg-slider .slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -51,7 +50,7 @@
             padding: 15px 10px; 
             border-radius: 8px; 
             box-shadow: 0 0 10px rgba(0,0,0,0.08); 
-            background: rgba(255,255,255,0.95); /* 半透明白色，保证文字清晰 */
+            background: #ffffff; /* 纯白背景，内容完全不透明 */
             position: relative;
             z-index: 1;
             max-width: 100%;
@@ -68,7 +67,7 @@
         .double-input input { flex: 1; }
         .copyright { margin-top: 10px; text-align: center; font-size: 12px; color: #9ca3af; padding-top: 8px; border-top: 1px solid #e5e7eb; }
 
-        /* 极简报告样式 - 保留优化后的紧凑布局 */
+        /* 极简报告样式 */
         .report { margin-top: 15px; padding: 12px 10px; background: #ffffff; border-radius: 6px; border: 1px solid #e2e8f0; width: 100%; }
         .report-header { text-align: center; color: #6b7280; font-size: 13px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f3f4f6; }
         .fee-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 14px; border-bottom: 1px solid #f3f4f6; }
@@ -86,20 +85,8 @@
     </style>
 </head>
 <body>
-    <!-- 全屏轮播背景 -->
-    <div class="bg-full">
-        <div class="slides">
-            <!-- 替换为你的实际图片链接 -->
-            <div class="slide"><img src="photo1.jpg" alt="开心羽球群合影1"></div>
-            <div class="slide"><img src="photo2.jpg" alt="开心羽球群合影2"></div>
-            <div class="slide"><img src="photo3.jpg" alt="开心羽球群合影3"></div>
-            <div class="slide"><img src="photo4.jpg" alt="开心羽球群合影4"></div>
-            <div class="slide"><img src="photo5.jpg" alt="开心羽球群合影5"></div>
-        </div>
-    </div>
-
     <div class="container">
-        <h1>洛溪开心羽球群费用分摊计算器</h1>
+        <h1>洛溪开心羽球群费用分摊器</h1>
         
         <!-- 输入区域 -->
         <div class="input-section" id="inputSection">
@@ -108,13 +95,13 @@
                 <input type="number" id="siteFee" min="1" step="5">
             </div>        
             <div class="input-item">
-                <label>打球总人数</label>
+                <label>打球总人数（必填，至少1人）</label>
                 <input type="number" id="peopleNum" min="1" placeholder="" step="1">
             </div>
             <div class="input-item">
                 <label>球A - 整桶总价（元） | 当日使用数量（个）</label>
                 <div class="double-input">
-                    <input type="number" id="ball1Total" min="0" placeholder="整桶价" value=90.34 step="0.01">
+                    <input type="number" id="ball1Total" min="0" placeholder="整桶价" value=79.9 step="0.01">
                     <input type="number" id="ball1Count" min="0" placeholder="使用个数" step="1">
                 </div>
             </div>
@@ -144,6 +131,18 @@
             <div class="report-buttons">
                 <button class="btn-back" onclick="resetReport()">返回计算</button>
                 <button class="btn-share" onclick="shareResult()">分享结果</button>
+            </div>
+        </div>
+
+        <!-- 轮播图容器 - 放在内容下方 -->
+        <div class="bg-slider">
+            <div class="slides">
+                <!-- 替换为你的实际图片链接 -->
+                <div class="slide"><img src="photo1.jpg" alt="开心羽球群合影1"></div>
+                <div class="slide"><img src="photo2.jpg" alt="开心羽球群合影2"></div>
+                <div class="slide"><img src="photo3.jpg" alt="开心羽球群合影3"></div>
+                <div class="slide"><img src="photo4.jpg" alt="开心羽球群合影4"></div>
+                <div class="slide"><img src="photo5.jpg" alt="开心羽球群合影5"></div>
             </div>
         </div>
 
@@ -178,7 +177,7 @@
             let ball2Cost = 0;
             let ballFeeDetailsHtml = '';
 
-            // 球A明细（优化格式，保证不换行）
+            // 球A明细
             ballFeeDetailsHtml += `
                 <div class="fee-item">
                     <span class="label">球A费用（${ball1Count}个，${ball1Total.toFixed(2)}/桶）</span>
